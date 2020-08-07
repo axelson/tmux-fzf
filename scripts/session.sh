@@ -24,7 +24,8 @@ if [[ "$action" != "detach" ]]; then
         FZF_DEFAULT_OPTS=$(echo $FZF_DEFAULT_OPTS | sed -E -e '$a --header="select target session"')
     fi
     if [[ "$action" == "attach" ]]; then
-        tmux_attached_sessions=$(tmux list-sessions | grep 'attached' | grep -o '^[[:alpha:][:digit:]_-]*:' | sed 's/.$//g')
+        current_session_name=$(tmux display-message -p "#S")
+        tmux_attached_sessions=$(tmux list-sessions | grep "$current_session_name" | grep -o '^[[:alpha:][:digit:]_-]*:' | sed 's/.$//g')
         sessions=$(echo "$sessions" | grep -v "^$tmux_attached_sessions")
         target_origin=$(printf "%s\n[cancel]" "$sessions" | eval "$CURRENT_DIR/.fzf-tmux $TMUX_FZF_OPTIONS")
     else
